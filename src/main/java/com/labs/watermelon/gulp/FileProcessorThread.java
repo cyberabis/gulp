@@ -67,8 +67,7 @@ public class FileProcessorThread implements Runnable {
 				}
 			}
 
-			// String lines[] = newChunk.split("\\r?\\n");
-			String lines[] = newChunk.split("\\n");
+			String lines[] = newChunk.split("\\r?\\n");
 			Map<String, String> kv = new TreeMap<String, String>();
 
 			if (!noRegex) {
