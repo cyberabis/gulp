@@ -51,9 +51,6 @@ public class FileProcessorThread implements Runnable {
 				}
 			}
 			String chunk = in.getInQ().remove();
-
-			// Logic for handling newlines and carryover, see if this can be
-			// optimized better
 			String newChunk = carryOverLine + chunk;
 			int carryOverLength = carryOverLine.length();
 			carryOverLine = "";
@@ -70,7 +67,7 @@ public class FileProcessorThread implements Runnable {
 				}
 			}
 
-			//String lines[] = newChunk.split("\\r?\\n");
+			// String lines[] = newChunk.split("\\r?\\n");
 			String lines[] = newChunk.split("\\n");
 			Map<String, String> kv = new TreeMap<String, String>();
 
@@ -88,10 +85,10 @@ public class FileProcessorThread implements Runnable {
 						dt = fmtIn.parseDateTime(line.substring(
 								matcher.start(), matcher.end()));
 						key = fileId + "#" + fmtOut.print(dt) + "#";
-						kv.put(key+seqNo++, line);
+						kv.put(key + seqNo++, line);
 					} else {
 						if ((!line.equals("")) && (key != null)) {
-							kv.put(key+seqNo++, line);
+							kv.put(key + seqNo++, line);
 						}
 					}
 				}
@@ -101,16 +98,20 @@ public class FileProcessorThread implements Runnable {
 						.forPattern("yyyy/MM/dd#HH:mm:ss.SSS");
 				DateTime dt = null;
 				for (String line : lines) {
-					dt = fmtIn.parseDateTime(line.substring(keyStartIndex, keyEndIndex));
+					dt = fmtIn.parseDateTime(line.substring(keyStartIndex,
+							keyEndIndex));
 					key = fileId + "#" + fmtOut.print(dt) + "#";
-					kv.put(key+seqNo++, line);
+					kv.put(key + seqNo++, line);
 				}
 			}
 
 			synchronized (out) {
 				try {
 					out.getOutQ().put(kv);
-				} catch (InterruptedException  e) {System.err.println("Interupted Exception while adding map to outQ");}
+				} catch (InterruptedException e) {
+					System.err
+							.println("Interupted Exception while adding map to outQ");
+				}
 				out.notify();
 			}
 		}
